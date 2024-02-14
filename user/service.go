@@ -1,6 +1,7 @@
 package user
 
 import (
+	"errors"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -9,6 +10,7 @@ import (
 
 type Service interface {
 	RegisterUser(input RegisterUserInput) (User, error)
+	LoginUser(input LoginUserInput) (User, error)
 }
 
 type service struct {
@@ -67,5 +69,32 @@ func (s *service) RegisterUser(input RegisterUserInput) (User, error) {
 	}
 
 	return newUser, nil
+
+}
+
+func (s *service) LoginUser(input LoginUserInput) (User, error) {
+	// mencocokan password input dengan password db
+
+	emailInput := input.Email
+	passwordInput := input.Password
+
+	findUser, err := s.repository.FindEmail(emailInput)
+
+	if err != nil {
+		return findUser, err
+	}
+	if findUser.ID == 0 {
+		return findUser, errors.New("User Not Found")
+	}
+
+	passwordFromDB := findUser.PasswordHash
+
+	passwordCompare := bcrypt.CompareHashAndPassword([]byte(passwordFromDB), []byte(passwordInput))
+
+	if passwordCompare != nil {
+		return findUser, err
+	}
+
+	return findUser, nil
 
 }

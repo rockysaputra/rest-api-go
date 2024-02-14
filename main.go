@@ -17,18 +17,20 @@ func main() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-
-	userRepository := user.NewRepository(db)
-
-	userService := user.NewService(userRepository)
-
-	userHandler := handler.NewUserHandler(userService)
-
 	router := gin.Default()
 
-	api := router.Group("/api/v1")
+	apiUser := router.Group("/api/user")
+	{
+		userRepository := user.NewRepository(db)
 
-	api.POST("/users", userHandler.RegisterUser)
+		userService := user.NewService(userRepository)
+
+		userHandler := handler.NewUserHandler(userService)
+
+		apiUser.POST("/register", userHandler.RegisterUser)
+
+		apiUser.POST("/login", userHandler.LoginUser)
+	}
 
 	router.Run()
 }
