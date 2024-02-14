@@ -60,9 +60,8 @@ func (h *userHandler) LoginUser(c *gin.Context) {
 	}
 
 	findUser, err := h.userService.LoginUser(input)
-
 	if err != nil {
-		response := helper.APIResponse("Login Failed", http.StatusBadRequest, "error", nil)
+		response := helper.APIResponse("Username or Password is wrong", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}

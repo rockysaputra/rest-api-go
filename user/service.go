@@ -2,6 +2,7 @@ package user
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -92,7 +93,8 @@ func (s *service) LoginUser(input LoginUserInput) (User, error) {
 	passwordCompare := bcrypt.CompareHashAndPassword([]byte(passwordFromDB), []byte(passwordInput))
 
 	if passwordCompare != nil {
-		return findUser, err
+		fmt.Println("password salah")
+		return findUser, passwordCompare
 	}
 
 	return findUser, nil
