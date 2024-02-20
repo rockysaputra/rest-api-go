@@ -32,5 +32,10 @@ func main() {
 		apiUser.POST("/login", userHandler.LoginUser)
 	}
 
-	router.Run()
+	go func() {
+		if err := router.Run(); err != nil {
+			log.Fatal("Gagal menjalankan server: ", err)
+		}
+	}()
+	select {}
 }
